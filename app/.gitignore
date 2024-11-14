@@ -3,13 +3,13 @@ node_modules
 # env
 bin/
 lib/
+include/
 pyvenv.cfg
 
 # Output
 .output
 .vercel
 /.svelte-kit
-/build
 
 # OS
 .DS_Store
