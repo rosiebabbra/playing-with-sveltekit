@@ -2,3 +2,4 @@ lib/** linguist-vendored
 include/** linguist-vendored
 bin/** linguist-vendored
 *.py linguist-vendored
+*.js linguist-vendored
