@@ -1,7 +1,11 @@
 <script>
 	let userPrompt = '';
-	let chatResponse = '';
 	let loading = false;
+	// @ts-ignore
+	/**
+	 * @type {any[]}
+	 */
+	let chatHistory = []; // Keep track of user and AI messages.
 
 	async function getChatResponse() {
 		loading = true;
@@ -19,9 +23,20 @@
 			}
 
 			const data = await response.json();
-			chatResponse = data.choices[0].message.content || 'No response';
+			chatHistory = [
+				// @ts-ignore
+				...chatHistory,
+				{ role: 'user', content: userPrompt },
+				{ role: 'assistant', content: data.choices[0].message.content }
+			];
+			userPrompt = '';
 		} catch (error) {
-			chatResponse = `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`;
+			console.error('Error:', error);
+			// @ts-ignore
+			chatHistory = [
+				...chatHistory,
+				{ role: 'system', content: 'Error: Could not fetch response' }
+			];
 		} finally {
 			loading = false;
 		}
@@ -47,18 +62,16 @@
 		>
 			{loading ? 'Loading...' : 'Get Response'}
 		</button>
-		{#if chatResponse}
-			<p>{chatResponse}</p>
-		{/if}
+
+		<div class="w-full mt-5">
+			{#each chatHistory as message, index}
+				<div class="mb-2">
+					<strong class={message.role === 'user' ? 'text-blue-600' : 'text-green-600'}>
+						{message.role === 'user' ? 'User:' : 'Assistant:'}
+					</strong>
+					<span>{message.content}</span>
+				</div>
+			{/each}
+		</div>
 	</div>
 </main>
-
-<style>
-	textarea {
-		width: 100%;
-		margin-bottom: 1em;
-	}
-	button {
-		margin-bottom: 1em;
-	}
-</style>
