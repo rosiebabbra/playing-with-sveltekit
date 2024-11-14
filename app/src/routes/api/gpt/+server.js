@@ -1,20 +1,26 @@
-import { OPENAI_API_KEY } from '$env/static/private';
-
 // @ts-ignore
 export async function POST({ request }) {
     const { prompt } = await request.json();
 
     try {
-        const response = await fetch('https://api.openai.com/v1/completions', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
+                'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: 'gpt-4o-mini', // Use the specific model you need
-                prompt: prompt,
-                max_tokens: 100
+                model: 'gpt-4o', // Use the specific model you need
+                messages: [
+                    {
+                        "role": "system",
+                        "content": "You are a helpful assistant."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
             })
         });
 
@@ -28,6 +34,7 @@ export async function POST({ request }) {
                 }
             });
         }
+
 
         return new Response(JSON.stringify(data), {
             status: 200,

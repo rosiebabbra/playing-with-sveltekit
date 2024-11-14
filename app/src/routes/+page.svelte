@@ -19,7 +19,7 @@
 			}
 
 			const data = await response.json();
-			chatResponse = data.choices[0]?.text.trim() || 'No response';
+			chatResponse = data.choices[0].message.content || 'No response';
 		} catch (error) {
 			chatResponse = `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`;
 		} finally {
@@ -29,17 +29,28 @@
 </script>
 
 <main>
-	<h1>ChatGPT SvelteKit Demo</h1>
+	<div class="flex justify-center items-center pt-20">
+		<h1 class="text-2xl font-bold text-pink-400">ChatGPT SvelteKit Demo</h1>
+	</div>
 
-	<textarea bind:value={userPrompt} rows="4" placeholder="Enter your prompt..."></textarea>
-	<button on:click={getChatResponse} disabled={loading}>
-		{loading ? 'Loading...' : 'Get Response'}
-	</button>
-
-	{#if chatResponse}
-		<h3>ChatGPT Response:</h3>
-		<p>{chatResponse}</p>
-	{/if}
+	<div class="flex flex-col justify-center items-center w-1/2 mx-auto pt-3.5">
+		<textarea
+			bind:value={userPrompt}
+			rows="4"
+			placeholder="Enter your prompt..."
+			class="mb-4 p-2 border rounded w-full"
+		></textarea>
+		<button
+			on:click={getChatResponse}
+			disabled={loading}
+			class="p-2 bg-pink-400 text-white rounded"
+		>
+			{loading ? 'Loading...' : 'Get Response'}
+		</button>
+		{#if chatResponse}
+			<p>{chatResponse}</p>
+		{/if}
+	</div>
 </main>
 
 <style>
